@@ -1,0 +1,21 @@
+a=12
+b=34
+c=12.345
+d='hello, world'
+e=True
+f=False
+g=1+5j
+h=9
+i=chr(9)
+print(a+b)
+print(a-b)
+print(a*b)
+print(a/b)
+print(type(a))
+print(type(b))
+print(type(c))
+print(type(d))
+print(type(e))
+print(type(f))
+print(type(g))
+print(i)
