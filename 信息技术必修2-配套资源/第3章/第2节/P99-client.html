@@ -1,0 +1,26 @@
+﻿<html>
+
+<input id='host' value='127.0.0.1'></input><button onclick='con()'>连接</button>
+<br/><br/>
+<input id='msg'></input><button onclick='send()'>发送</button>
+<div id="output" ></div>
+
+<script language="javascript">
+	function con(){
+		ws = new WebSocket("ws://"+host.value+":8765/")
+		ws.onopen = function(evt) { writeToScreen("CONNECTED!")}; 
+		ws.onmessage = function(evt) { writeToScreen(evt.data);};	
+	}
+	
+	function send(){
+		message=msg.value;
+		ws.send(message);
+	}
+  
+	function writeToScreen(message) { 
+		var pre = document.createElement("p"); 
+		pre.innerHTML = message; 
+		output.appendChild(pre); 
+	}
+ </script>
+ <html>
