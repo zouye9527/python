@@ -1,12 +1,12 @@
-h = float(input("ÇëÊäÈëÉí¸ß£¨µ¥Î»£ºÃ×£©£º"))
-w = float(input("ÇëÊäÈëÌåÖØÖµ£¨µ¥Î»£ºÇ§¿Ë£©£º"))
+h = float(input("è¯·è¾“å…¥èº«é«˜ï¼ˆå•ä½ï¼šç±³ï¼‰ï¼š"))
+w = float(input("è¯·è¾“å…¥ä½“é‡å€¼ï¼ˆå•ä½ï¼šåƒå…‹ï¼‰ï¼š"))
 bmi = round(w/(h*h),1)
 if bmi <= 16.4:
-    print("BMIÖµÎª£º",bmi,",ÊôÓÚµÍÌåÖØ") 
+    print("BMIå€¼ä¸ºï¼š",bmi,",å±äºä½ä½“é‡") 
 elif bmi <= 23.2:
-    print("BMIÖµÎª£º",bmi,",ÊôÓÚÕı³£ÌåÖØ".format(bmi))
+    print("BMIå€¼ä¸ºï¼š",bmi,",å±äºæ­£å¸¸ä½“é‡".format(bmi))
 elif bmi < 26.4:
-    print("BMIÖµÎª£º",bmi,",ÊôÓÚ³¬ÖØ".format(bmi))
+    print("BMIå€¼ä¸ºï¼š",bmi,",å±äºè¶…é‡".format(bmi))
 else:
-    print("BMIÖµÎª£º",bmi,",ÊôÓÚ·ÊÅÖ".format(bmi))
+    print("BMIå€¼ä¸ºï¼š",bmi,",å±äºè‚¥èƒ–".format(bmi))
 

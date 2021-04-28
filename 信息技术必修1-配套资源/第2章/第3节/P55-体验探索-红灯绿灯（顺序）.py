@@ -1,3 +1,4 @@
+# 绘制红灯绿灯
 import turtle
 light = turtle.Turtle()
 light.hideturtle()
@@ -12,5 +13,3 @@ light.color("green", "green")
 light.begin_fill()
 light.circle(20)
 light.end_fill()
-
-

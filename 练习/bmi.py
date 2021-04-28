@@ -12,14 +12,15 @@ while(True):
             print("超重")
         else:
             print("肥胖")
-    elif(bmi<=16.4):
-        print("低体重")
-    elif(bmi<=23.2):
-        print("正常体重")
-    elif(bmi<26.4):
-        print("超重")
-    else:
-        print("肥胖")
+    if(s=='男'):
+        if(bmi<=16.4):
+            print("低体重")
+        elif(bmi<=23.2):
+            print("正常体重")
+        elif(bmi<26.4):
+            print("超重")
+        else:
+            print("肥胖")
     isQ=input("是否要继续，继续输入“y”，退出请输入“q”")
     if(isQ=='y'):
         continue
