@@ -1,11 +1,11 @@
 '''
-输入身高，体重计算bmi，并判断是否健康
+输入身高，体重计算bmi，并判定等级
 '''
 import tkinter
 import tkinter.messagebox
  
 root = tkinter.Tk()
-root.title('BMI计算2.0')
+root.title('BMI计算3.0')
 root.geometry('250x160')
 
 bmi = tkinter.StringVar()
@@ -31,11 +31,13 @@ entryHeight.place(x=90,y=80,height=20,width=80)
 def msgbox():
     bmi.set = round(float(entryWeight.get())/(float(entryHeight.get())*float(entryHeight.get())),2)
     if bmi.set<18.5:                             
-        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 不健康'.format(result=bmi.set))
+        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 低体重'.format(result=bmi.set))
     elif bmi.set<23.9:
-        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 健康'.format(result=bmi.set))
+        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 正常'.format(result=bmi.set))
+    elif bmi.set<30:
+        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 超重'.format(result=bmi.set))
     else :
-        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 不健康'.format(result=bmi.set))
+        tkinter.messagebox.showinfo(title='BMI计算结果', message='你的BMI指数是 {result} 肥胖'.format(result=bmi.set))
     return 
         
 button = tkinter.Button(root,text='计算BMI',command=msgbox)
