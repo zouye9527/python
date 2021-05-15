@@ -6,3 +6,8 @@ for i in range(1, 10):
         print(i, " * ", j, " = ", i * j, "\t", end="")
     # 设置换行操作(print()函数不输出任何字符，只进行换行)
     print()
+
+
+
+
+

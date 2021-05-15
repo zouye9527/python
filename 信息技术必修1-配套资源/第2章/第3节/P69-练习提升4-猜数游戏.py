@@ -7,9 +7,9 @@ while number > 0:
         print("猜中了！")
         break
     elif temp1 > secret:
-        print("数偏大,还是剩", number - 1, "次机会")
+        print("数偏大,还剩", number - 1, "次机会")
     else:
-        print("数偏小,还是剩", number - 1, "次机会")
+        print("数偏小,还剩", number - 1, "次机会")
     number -= 1
 if number == 0:
     print("答案是", secret)
