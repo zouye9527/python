@@ -9,10 +9,10 @@ while True:
 	a=float(input('请输入第%d件商品价格,输入0中止：'%(n+1)))
 	if a==0:
 		break
-	s=s+a
+	s=s*a
 	n+=1
 if n>=3:
-	fee=s*0.3
+	pay=s*0.3
 else:
-	fee=s*0.6
-print('应付款为：%.2f'%fee)
+	pay=s*0.6
+print('应付款为：%.2f'%pay)

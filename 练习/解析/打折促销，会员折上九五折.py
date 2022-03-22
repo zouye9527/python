@@ -12,13 +12,13 @@ while True:
 	s=s+a
 	n+=1
 if n>=3:
-	fee=s*0.3
+	pay=s*0.3
 else:
-	fee=s*0.6
+	pay=s*0.6
 memno='8017'
 memif=input('请输入会员电话后四位')
 if memif==memno:
-	fee=fee*0.95
-	print('会员您好，应付款为：%.2f'%fee)
+	pay=pay*0.95
+	print('会员您好，应付款为：%.2f'%pay)
 else:
-	print('您不是会员，应付款为：%.2f'%fee)
+	print('您不是会员，应付款为：%.2f'%pay)

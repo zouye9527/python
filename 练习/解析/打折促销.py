@@ -12,5 +12,5 @@ while True:
 		break
 	s+=a
 	n+=1
-fee=s*dc
-print('应付款为：%.2f'%fee)
+pay=s*dc
+print('应付款为：%.2f'%pay)
