@@ -6,7 +6,7 @@
 n=0
 s=0
 while True:
-	a=float(input('请输入第%d件商品价格,输入0中止'%(n+1)))
+	a=float(input('请输入第%d件商品价格,输入0中止：'%(n+1)))
 	if a==0:
 		break
 	s=s+a
