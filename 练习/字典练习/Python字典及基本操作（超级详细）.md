@@ -199,8 +199,10 @@ print(list(vals)[1]) # 8.3
 
 pop() 方法用于获取指定 key 对应的 value，并删除这个 key-value 对。如下方法示范了 pop() 方法的用法：
 
-```
-cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9}print(cars.pop('AUDI')) # 7.9print(cars) # {'BMW': 8.5, 'BENS': 8.3}
+```python
+cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9}
+print(cars.pop('AUDI')) # 7.9
+print(cars) # {'BMW': 8.5, 'BENS': 8.3}
 ```
 
 此程序中，第 2 行代码将会获取“AUDI”对应的 value，并删除该 key-value 对。
@@ -213,14 +215,19 @@ popitem() 方法用于随机弹出字典中的一个 key-value 对。
 
 如下代码示范了 popitem() 方法的用法：
 
-```
-cars = {'AUDI': 7.9, 'BENS': 8.3, 'BMW': 8.5}print(cars)# 弹出字典底层存储的最后一个key-value对print(cars.popitem()) # ('AUDI', 7.9)print(cars) # {'BMW': 8.5, 'BENS': 8.3}
+```python
+cars = {'AUDI': 7.9, 'BENS': 8.3, 'BMW': 8.5}
+print(cars)# 弹出字典底层存储的最后一个key-value对
+print(cars.popitem()) # ('AUDI', 7.9)
+print(cars) # {'BMW': 8.5, 'BENS': 8.3}
 ```
 
 由于实际上 popitem 弹出的就是一个元组，因此程序完全可以通过序列解包的方式用两个变量分别接收 key 和 value。例如如下代码：
 
-```
-# 将弹出项的key赋值给k、value赋值给vk, v = cars.popitem()print(k, v) # BENS 8.3
+```python
+# 将弹出项的key赋值给k、value赋值给v
+k, v = cars.popitem()
+print(k, v) # BENS 8.3
 ```
 
 #### setdefault()方法
@@ -231,16 +238,29 @@ setdefault() 方法也用于根据 key 来获取对应 value 的值。但该方�
 
 如下代码示范了 setdefault() 方法的用法：
 
-```
-cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9}# 设置默认值，该key在dict中不存在，新增key-value对print(cars.setdefault('PORSCHE', 9.2)) # 9.2print(cars)# 设置默认值，该key在dict中存在，不会修改dict内容print(cars.setdefault('BMW', 3.4)) # 8.5print(cars)
+```python
+cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9}# 设置默认值，该key在dict中不存在，新增key-value对
+print(cars.setdefault('PORSCHE', 9.2)) # 9.2
+print(cars)
+# 设置默认值，该key在dict中存在，不会修改dict内容
+print(cars.setdefault('BMW', 3.4)) # 8.5
+print(cars)
 ```
 
 #### fromkeys()方法
 
 fromkeys() 方法使用给定的多个 key 创建字典，这些 key 对应的 value 默认都是 None；也可以额外传入一个参数作为默认的 value。该方法一般不会使用字典对象调用（没什么意义），通常会使用 dict 类直接调用。例如如下代码：
 
-```
-# 使用列表创建包含2个key的字典a_dict = dict.fromkeys(['a', 'b'])print(a_dict) # {'a': None, 'b': None}# 使用元组创建包含2个key的字典b_dict = dict.fromkeys((13, 17))print(b_dict) # {13: None, 17: None}# 使用元组创建包含2个key的字典，指定默认的valuec_dict = dict.fromkeys((13, 17), 'good')print(c_dict) # {13: 'good', 17: 'good'}
+```python
+# 使用列表创建包含2个key的字典
+a_dict = dict.fromkeys(['a', 'b'])
+print(a_dict) # {'a': None, 'b': None}
+# 使用元组创建包含2个key的字典
+b_dict = dict.fromkeys((13, 17))
+print(b_dict) # {13: None, 17: None}
+# 使用元组创建包含2个key的字典，指定默认的value
+c_dict = dict.fromkeys((13, 17), 'good')
+print(c_dict) # {13: 'good', 17: 'good'}
 ```
 
 ## 使用字典格式化字符串
@@ -249,8 +269,15 @@ fromkeys() 方法使用给定的多个 key 创建字典，这些 key 对应的 v
 
 例如如下程序：
 
-```
-# 字符串模板中使用keytemp = '教程是:%(name)s, 价格是:%(price)010.2f, 出版社是:%(publish)s'book = {'name':'Python基础教程', 'price': 99, 'publish': 'C语言中文网'}# 使用字典为字符串模板中的key传入值print(temp % book)book = {'name':'C语言小白变怪兽', 'price':159, 'publish': 'C语言中文网'}# 使用字典为字符串模板中的key传入值print(temp % book)
+```python
+# 字符串模板中使用key
+temp = '教程是:%(name)s, 价格是:%(price)010.2f, 出版社是:%(publish)s'
+book = {'name':'Python基础教程', 'price': 99, 'publish': 'C语言中文网'}
+# 使用字典为字符串模板中的key传入值
+print(temp % book)
+book = {'name':'C语言小白变怪兽', 'price':159, 'publish': 'C语言中文网'}
+# 使用字典为字符串模板中的key传入值
+print(temp % book)
 ```
 
 运行上面程序，可以看到如下输出结果：
