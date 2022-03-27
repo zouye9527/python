@@ -26,3 +26,4 @@ while True:
             for i in cart:
                 pay=pay+pricels[i-1]
             print('应付款为：%.2f'%pay)
+        break
