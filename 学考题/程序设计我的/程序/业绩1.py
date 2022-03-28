@@ -14,16 +14,12 @@
 a=list(map(int,input('A公司业绩：').split()))
 b=list(map(int,input('B公司业绩：').split()))
 na=0
-sa=0
 nb=0
-sb=0
 for i in a:
     if i<50:
         na+=1
-    sa+=i
 for i in b:
     if i<50:
         nb+=1
-    sb+=i
-print(na,sa)
-print(nb,sb)
+print(na,sum(a))
+print(nb,sum(b))

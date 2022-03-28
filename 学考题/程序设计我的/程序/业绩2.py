@@ -12,12 +12,8 @@
 a=list(map(int,input('A公司业绩：').split()))
 b=list(map(int,input('B公司业绩：').split()))
 c=[]
-sa=0
-sb=0
 for i in range(12):
     if b[i]>a[i]:
         c.append(i+1)
-    sa+=a[i]
-    sb+=b[i]
 print(c)
-print(sa,sb)
+print(sum(a),sum(b))
