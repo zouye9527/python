@@ -14,9 +14,9 @@ from time import sleep
 sys.setrecursionlimit(1000000)
  
 
-APP_ID = '23935531'
-API_KEY = 'auqVKL7FH8MYbN1RLyqCIo0t'
-SECRET_KEY = 'n2LWuIOG7v3Djk8oR7kYzlArkBt58gqg'
+APP_ID = '26266987'
+API_KEY = 'NUGbOm39G80AFZWGWh8F8f1Z'
+SECRET_KEY = 'KNzF6nDWpNslHHEIj8HxtUkElXaKAf1e'
  
 aipFace = AipFace(APP_ID, API_KEY, SECRET_KEY)
 
@@ -33,9 +33,9 @@ def face_add(filepath,unit,num,name):
   if result['error_code']==0:
     win = GraphWin('检测结果',300,300)
     Text(Point(win.getWidth()/2, 80), "增加人脸成功").draw(win)
+    print("增加人脸成功")
     win.getMouse()
     win.close()
-    print("增加人脸成功")
   else:
     win = GraphWin('人脸注册结果',300,300)
     Text(Point(win.getWidth()/2, 80), "增加人脸失败").draw(win)
@@ -74,4 +74,4 @@ if __name__=='__main__':
     face_add(filepath,'class00075',int(e1.get()),e2.get().encode("utf-8").decode("latin1"))
   
   tk.Button(root, text="确定", width=10, command=show).grid(row=3, column=1, padx=10, pady=5)  
-
+  root.mainloop()

@@ -8,12 +8,14 @@ from graphics import*
 import tkinter as tk
 from tkinter import filedialog
 from time import sleep
+
+from numpy import size
 sys.setrecursionlimit(1000000) 
  
 
-APP_ID = '23935531'
-API_KEY = 'auqVKL7FH8MYbN1RLyqCIo0t'
-SECRET_KEY = 'n2LWuIOG7v3Djk8oR7kYzlArkBt58gqg'
+APP_ID = '26266987'
+API_KEY = 'NUGbOm39G80AFZWGWh8F8f1Z'
+SECRET_KEY = 'KNzF6nDWpNslHHEIj8HxtUkElXaKAf1e'
  
 aipFace = AipFace(APP_ID, API_KEY, SECRET_KEY)
 

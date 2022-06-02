@@ -1,23 +1,24 @@
 # coding=utf-8# python3.7
- 
- 
 import json
 from pprint import pprint
 from aip import AipOcr
- 
+import tkinter as tk
+from tkinter import filedialog
+
 appId = '23942800'
 apiKey = 'FpGRgkjDV1tDpvNvOBGKyUkG'
 secretKey = 'sVrlQMVp3i13xp0l3RgOSRFv3wzDNNFB'
  
 # 请求连接服务器
 client = AipOcr(appId, apiKey, secretKey)
- 
+filepath = "D:\\0\\1.JPG"
+filepath = filedialog.askopenfilename() 
 # 获取本地图片
 def get_file_content(filePath):
     with open(filePath, 'rb') as fp:
         return fp.read()
  
-image = get_file_content(r'2.png')
+image = get_file_content(filepath)
  
 # 设置语言，这是百度api的参数，可查看官方文档
 options = {'language_type':'CHN_ENG'}
