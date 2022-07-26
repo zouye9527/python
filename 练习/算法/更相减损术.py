@@ -1,0 +1,12 @@
+m=int(input("请输入整数m:"))
+n=int(input("请输入整数n:"))
+while(m%2==0):
+    m/=2
+while(n%2==0):
+    n/=2
+while(m!=n):
+    if(m>n):
+        m=m-n
+    else:
+        n=n-m
+print("这两个正整数的最大公约数为：",m)
