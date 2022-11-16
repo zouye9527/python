@@ -29,7 +29,6 @@ h=1.75
 print("您的身高是：",end="")
 print(h)
 
-a=int(input())
-print(a)
+
 
 
