@@ -9,8 +9,14 @@
 1 2 4 6 9 12 
 502 675
 """
-A=list(map(int, input().split()))
-B=list(map(int, input().split()))
+A0=input().split()
+B0=input().split()
+A=[]
+B=[]
+for i in A0:
+  A.append(int(i))
+for i in B0:
+  B.append(int(i))
 for m in range(12):
   if B[m] > A[m]:
      print(m+1,end="  ")

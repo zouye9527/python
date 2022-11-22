@@ -27,11 +27,12 @@
 （输入输出说明：输入数据有12行，每行有两个数，第一个为月份（两位数），第二个数为当月的电费；
 输出数据的第一行为12个月的平均电费（保留两位小数），接下来的若干行分别是电费高于平均电费的月份）
 """
-yue,df=[],[]
+yue=[]
+df=[]
 for i in range(12):
-    s=input()
-    yue.append(s[:2])
-    df.append(float(s[2:]))
+    s=input().split()
+    yue.append(s[0])
+    df.append(float(s[1]))
 ave=sum(df)/12
 print("%.2f"%ave)
 for i in range(12):

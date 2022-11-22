@@ -9,13 +9,22 @@
 5 502
 7 675
 """
-def xse(s):
-    return s>50
-gs1=list(map(int,input().split()))
-gs2=list(map(int,input().split()))
-count1=len(list(filter(xse, gs1)))
-count2=len(list(filter(xse, gs2)))
-sum1=sum(gs1)
-sum2=sum(gs2)
-print(count1,sum1)
-print(count2,sum2)
+A0=input().split()
+B0=input().split()
+A=[]
+B=[]
+s=0
+s1=0
+for i in A0:
+  A.append(int(i))
+for i in B0:
+  B.append(int(i))
+for m in A:
+  if m > 50:
+     s=s+1
+for i in B:
+    if i>50:
+        s1=s1+1
+print(s,sum(A))
+print(s1, sum(B))
+

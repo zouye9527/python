@@ -19,10 +19,12 @@
 """
 n=int(input())
 cj=[]
+num=[]
 for i in range(n):
-    s=input()
-    left1=s[:3]+" "
-    right2=str(sum(map(int,s[3:].split())))
-    cj.append(left1+right2)
-for j in cj:
-   print(j)
+    s=input().split()
+    num.append(s[0])
+    cj.append(int(s[1])+int(s[2])+int(s[3]))
+for i in range(n):
+    print(num[i],cj[i])
+
+

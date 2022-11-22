@@ -5,5 +5,7 @@
 输出样例:
 38
 """
-a,b =map(int,input().split())
-print(a-b)
+a=int(input())
+b=int(input())
+c=a-b
+print(c)

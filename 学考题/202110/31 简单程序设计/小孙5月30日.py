@@ -5,5 +5,7 @@
 输出样例：
 65.9
 """
-a,b =map(float,input().split())
-print(a+b)
+a=float(input())
+b=float(input())
+c=a+b
+print(c)

@@ -9,17 +9,19 @@
 4 6 7 10 
 8
 """
-
-xz1=list(map(int, input().split()))
-xz2=list(map(int, input().split()))
-i=1
-for c in xz1:
-   if c<60:
-      print(i, end=' ')
-   i=i+1
+data1=input().split()
+data2=input().split()
+data1_1=[]
+data2_2=[]
+for i in data1:
+   data1_1.append(int(i))
+for i in data2:
+   data2_2.append(int(i))
+for i in range(len(data1_1)):
+   if data1_1[i]<60:
+      print(i+1," ",end='')
 print()
-j=1
-for d in xz2:
-  if d<60:
-      print(j, end=' ')
-  j=j+1
+for i in range(len(data2_2)):
+   if data2_2[i]<60:
+      print(i+1,' ',end='')
+

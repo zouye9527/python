@@ -16,17 +16,15 @@
 输入顺序不一定是按照学号顺序。小组成员大于5个，小于20个。输出的第一行为平均成绩（保留一位小数），
 接下来的数据是语文成绩高于平均分的学生的学号。
 """
-def ave(list):
-  return float(sum(list))/len(list)
-
 n=int(input())
-nu,score=[],[]
+xh=[]
+sc=[]
 for i in range(n):
-  s=input()
-  nu.append(s[:3])
-  score.append(float(s[3:]))
-av=ave(score)
-print("%.1f"%av)
-for i in range(n):
-  if score[i] > av:
-    print(nu[i])
+  data0=input().split()
+  xh.append(data0[0])
+  sc.append(int(data0[1]))
+avg=sum(sc)/len(sc)
+print("%.1f"%avg)
+for i in range(len(sc)):
+  if sc[i]>avg:
+    print(xh[i])
