@@ -6,3 +6,7 @@ for i in range(n, m + 1):
     for j in range(n, m + 1):
         if i + j <= s:
             print(i, "+", j, "=")
+        if i-j>=0:
+            print(i, "-", j, "=")
+        if j-i>=0:
+            print(j, "-", i, "=")
