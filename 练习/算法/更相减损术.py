@@ -9,4 +9,4 @@ while(m!=n):
         m=m-n
     else:
         n=n-m
-print("这两个正整数的最大公约数为：",m)
+print("这两个正整数的最大公约数为：",m) 
