@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>叫号系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+        #left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .window {
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .window:hover {
+            background-color: #f0f0f0;
+        }
+        #right-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="left-section">
+        <div class="window" onclick="callNext(1)">窗口 1: <span id="window1">暂无</span></div>
+        <div class="window" onclick="callNext(2)">窗口 2: <span id="window2">暂无</span></div>
+        <div class="window" onclick="callNext(3)">窗口 3: <span id="window3">暂无</span></div>
+    </div>
+    <div id="right-section">
+        <h1>叫号系统</h1>
+        <button onclick="takeNumber()">取号</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let currentNumber = 0;
+        let queue = [];
+        let windows = {
+            1: null,
+            2: null,
+            3: null
+        };
+
+        function takeNumber() {
+            currentNumber++;
+            queue.push(currentNumber);
+            const position = queue.length;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `您的号码是: ${currentNumber}，前面还有 ${position - 1} 人在排队。`;
+        }
+
+        function callNext(windowNumber) {
+            if (queue.length === 0) {
+                document.getElementById(`window${windowNumber}`).textContent = '暂无';
+                windows[windowNumber] = null;
+                return;
+            }
+            const nextNumber = queue.shift();
+            windows[windowNumber] = nextNumber;
+            document.getElementById(`window${windowNumber}`).textContent = nextNumber;
+            // 更新取号结果提示
+            const position = queue.length;
+            const resultDiv = document.getElementById('result');
+            if (position > 0) {
+                resultDiv.innerHTML = `当前队列还有 ${position} 人在排队。`;
+            } else {
+                resultDiv.innerHTML = '当前队列已空。';
+            }
+        }
+    </script>
+</body>
+</html>

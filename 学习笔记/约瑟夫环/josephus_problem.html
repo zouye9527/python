@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>约瑟夫环模拟</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        #input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        #circle-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+        }
+        .person {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s;
+        }
+        .eliminated {
+            background-color: #f44336;
+            transform: scale(0);
+        }
+    </style>
+</head>
+<body>
+    <h1>约瑟夫环模拟</h1>
+    <div id="input-section">
+        <input type="number" id="numPeople" placeholder="人数" min="1" value="10">
+        <input type="number" id="step" placeholder="间隔" min="1" value="3">
+        <button onclick="startSimulation()">开始模拟</button>
+    </div>
+    <div id="circle-container"></div>
+    <div id="result"></div>
+
+    <script>
+        function startSimulation() {
+            const numPeople = parseInt(document.getElementById('numPeople').value);
+            const step = parseInt(document.getElementById('step').value);
+            const circleContainer = document.getElementById('circle-container');
+            const resultDiv = document.getElementById('result');
+
+            // 清空容器
+            circleContainer.innerHTML = '';
+            resultDiv.innerHTML = '';
+
+            // 创建人员节点
+            const people = [];
+            for (let i = 0; i < numPeople; i++) {
+                const person = document.createElement('div');
+                person.className = 'person';
+                person.textContent = i + 1;
+                circleContainer.appendChild(person);
+                people.push(person);
+            }
+
+            // 计算人员位置
+            const radius = circleContainer.offsetWidth / 2 - 20;
+            const centerX = circleContainer.offsetWidth / 2;
+            const centerY = circleContainer.offsetHeight / 2;
+            people.forEach((person, index) => {
+                const angle = (2 * Math.PI * index) / numPeople;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                person.style.left = `${x - 15}px`;
+                person.style.top = `${y - 15}px`;
+            });
+
+            // 执行约瑟夫环算法
+            let index = 0;
+            const eliminationOrder = [];
+            const peopleCopy = [...people];
+            while (peopleCopy.length > 1) {
+                index = (index + step - 1) % peopleCopy.length;
+                const eliminatedPerson = peopleCopy.splice(index, 1)[0];
+                eliminationOrder.push(eliminatedPerson);
+                setTimeout(() => {
+                    eliminatedPerson.classList.add('eliminated');
+                }, eliminationOrder.length * 1000);
+            }
+
+            // 显示结果
+            setTimeout(() => {
+                resultDiv.innerHTML = `最后剩下的是: ${peopleCopy[0].textContent}`;
+            }, (eliminationOrder.length + 1) * 1000);
+        }
+    </script>
+</body>
+</html>
