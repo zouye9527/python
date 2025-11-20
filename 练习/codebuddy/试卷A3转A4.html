@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A3 试卷拆分为 A4 工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .upload-section {
+      padding: 30px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      text-align: center;
+    }
+
+    .upload-area {
+      border: 3px dashed rgba(255,255,255,0.5);
+      border-radius: 15px;
+      padding: 40px 20px;
+      margin: 20px 0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .upload-area:hover {
+      border-color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .upload-area.dragover {
+      border-color: #fff;
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.02);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .upload-text {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .upload-hint {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .instructions {
+      padding: 30px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .instructions h3 {
+      color: #495057;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .instructions ol {
+      padding-left: 20px;
+    }
+
+    .instructions li {
+      margin-bottom: 8px;
+      color: #6c757d;
+    }
+
+    .canvas-container {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+      background: #f8f9fa;
+    }
+
+    .canvas-page {
+      position: relative;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .canvas-page:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .canvas-page.selected {
+      outline: 4px solid #007bff;
+      transform: translateY(-3px);
+      box-shadow: 0 20px 50px rgba(0,123,255,0.3);
+    }
+
+    .page-header {
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-number {
+      font-size: 0.9rem;
+    }
+
+    .cut-lines-count {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fff;
+    }
+
+    .cut-line {
+      position: absolute;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, #ff4757, #ff3742);
+      cursor: ew-resize;
+      z-index: 10;
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(255,71,87,0.5);
+      transition: all 0.2s ease;
+    }
+
+    .cut-line:hover {
+      width: 6px;
+      box-shadow: 0 0 15px rgba(255,71,87,0.7);
+    }
+
+    .cut-line::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      background: #ff4757;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .controls {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    .control-btn {
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+      transition: all 0.3s ease;
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .control-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(0,123,255,0.4);
+      background: linear-gradient(135deg, #0056b3, #004085);
+    }
+
+    .control-btn:active {
+      transform: translateY(0);
+    }
+
+    .control-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 15px rgba(108,117,125,0.3);
+    }
+
+    .control-btn.export {
+      background: linear-gradient(135deg, #28a745, #1e7e34);
+      box-shadow: 0 8px 25px rgba(40,167,69,0.3);
+    }
+
+    .control-btn.export:hover:not(:disabled) {
+      box-shadow: 0 12px 35px rgba(40,167,69,0.4);
+      background: linear-gradient(135deg, #1e7e34, #155724);
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2em;
+      color: white;
+      z-index: 2000;
+      visibility: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .loading-overlay.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .progress-bar {
+      width: 300px;
+      height: 6px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #007bff, #28a745);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .status-message {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6c757d;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #dc3545;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #28a745;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+      }
+      
+      .control-btn {
+        min-width: auto;
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📄 A3试卷拆分为A4工具</h1>
+      <p>智能裁剪，轻松转换，专业打印</p>
+    </div>
+
+    <div class="main-content">
+      <div class="upload-section">
+        <div class="upload-area" id="uploadArea">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">点击或拖拽文件到此处</div>
+          <div class="upload-hint">支持 PDF、PNG、JPEG、GIF、BMP 格式</div>
+          <input type="file" id="fileInput" class="file-input" accept=".pdf,image/png,image/jpeg,image/jpg,image/gif,image/bmp" />
+        </div>
+      </div>
+
+      <div class="instructions">
+        <h3>📋 操作指南</h3>
+        <ol>
+          <li><strong>上传文件：</strong>选择PDF或图片格式的A3试卷（建议横向A3）</li>
+          <li><strong>选择页面：</strong>点击页面以选中目标页，或使用"全部选中"功能</li>
+          <li><strong>添加裁切线：</strong>在选中页面添加可拖动的垂直裁切线</li>
+          <li><strong>调整位置：</strong>拖动红色裁切线到精确位置</li>
+          <li><strong>删除裁切线：</strong>如需重新设置，可删除当前页面的所有裁切线</li>
+          <li><strong>导出PDF：</strong>生成A4格式的拆分后文件</li>
+        </ol>
+      </div>
+
+      <div class="canvas-container" id="canvasContainer">
+        <div class="empty-state">
+          <div class="empty-state-icon">📄</div>
+          <h3>请上传文件开始使用</h3>
+          <p>支持PDF和多种图片格式</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div id="loadingText">正在处理，请稍候...</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="status-message" id="statusMessage"></div>
+  </div>
+
+  <div class="controls">
+    <button class="control-btn" id="selectAllAddCutLines">
+      🌐 全部选中并添加裁切线
+    </button>
+    <button class="control-btn" id="addCutLine">
+      ➕ 添加裁切线
+    </button>
+    <button class="control-btn" id="removeCutLines">
+      🗑️ 删除本页裁切线
+    </button>
+    <button class="control-btn export" id="exportPDF">
+      📄 导出为PDF (A4)
+    </button>
+  </div>
+
+  <script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+    // DOM 元素
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const container = document.getElementById('canvasContainer');
+    const selectAllBtn = document.getElementById('selectAllAddCutLines');
+    const addCutLineBtn = document.getElementById('addCutLine');
+    const removeCutLinesBtn = document.getElementById('removeCutLines');
+    const exportBtn = document.getElementById('exportPDF');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    const statusMessage = document.getElementById('statusMessage');
+    const progressFill = document.getElementById('progressFill');
+
+    const supportedImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp'];
+
+    // 状态变量
+    let pages = [];
+    let currentPageIndex = null;
+    let isDragging = false;
+    let activeLine = null;
+
+    // 工具函数
+    function showLoading(message = "正在处理，请稍候...", progress = 0) {
+      loadingText.textContent = message;
+      progressFill.style.width = `${progress}%`;
+      loadingOverlay.classList.add('visible');
+      setButtonsDisabled(true);
+    }
+
+    function hideLoading() {
+      loadingOverlay.classList.remove('visible');
+      setButtonsDisabled(false);
+    }
+
+    function setButtonsDisabled(disabled) {
+      [addCutLineBtn, removeCutLinesBtn, exportBtn, selectAllBtn, fileInput].forEach(btn => {
+        if (btn) btn.disabled = disabled;
+      });
+    }
+
+    function updateProgress(progress, message) {
+      progressFill.style.width = `${progress}%`;
+      if (message) statusMessage.textContent = message;
+    }
+
+    function showMessage(message, type = 'success') {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+      messageDiv.textContent = message;
+      container.appendChild(messageDiv);
+      setTimeout(() => messageDiv.remove(), 5000);
+    }
+
+    // 页面创建函数
+    function createCanvasPage(width, height, pageIndex) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'canvas-page';
+      
+      const header = document.createElement('div');
+      header.className = 'page-header';
+      header.innerHTML = `
+        <span class="page-number">第 ${pageIndex + 1} 页</span>
+        <span class="cut-lines-count">0 条裁切线</span>
+      `;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      
+      wrapper.appendChild(header);
+      wrapper.appendChild(canvas);
+      container.appendChild(wrapper);
+
+      const pageData = {
+        wrapper,
+        canvas,
+        ctx: canvas.getContext('2d'),
+        originalImage: null,
+        cutLines: [],
+        pageIndex
+      };
+
+      wrapper.addEventListener('click', (e) => {
+        if (e.target.classList.contains('cut-line')) return;
+        selectPage(pageData);
+      });
+
+      return pageData;
+    }
+
+    function selectPage(pageData) {
+      pages.forEach((p, idx) => {
+        p.wrapper.classList.remove('selected');
+        if (p === pageData) currentPageIndex = idx;
+      });
+      pageData.wrapper.classList.add('selected');
+      updateCutLinesCount(pageData);
+    }
+
+    function updateCutLinesCount(page) {
+      const countElement = page.wrapper.querySelector('.cut-lines-count');
+      countElement.textContent = `${page.cutLines.length} 条裁切线`;
+    }
+
+    // 裁切线管理
+    function addCutLineToPage(page, initialRatio = 0.5) {
+      const line = document.createElement('div');
+      line.className = 'cut-line';
+      const cutData = { el: line, ratio: initialRatio };
+
+      const updateLinePosition = () => {
+        if (!line.parentNode) {
+          window.removeEventListener('resize', updateLinePosition);
+          return;
+        }
+        const wrapperRect = page.wrapper.getBoundingClientRect();
+        if (cutData && typeof cutData.ratio === 'number' && wrapperRect.width > 0) {
+          line.style.left = `${cutData.ratio * wrapperRect.width}px`;
+        }
+      };
+
+      line.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        activeLine = { line, page, cutData };
+        e.stopPropagation();
+      });
+
+      page.wrapper.appendChild(line);
+      page.cutLines.push(cutData);
+      cutData.resizeListener = updateLinePosition;
+      updateCutLinesCount(page);
+
+      requestAnimationFrame(updateLinePosition);
+      window.addEventListener('resize', updateLinePosition);
+    }
+
+    function removeCutLinesFromPage(page) {
+      page.cutLines.forEach(cut => {
+        cut.el.remove();
+        if (cut.resizeListener) {
+          window.removeEventListener('resize', cut.resizeListener);
+        }
+      });
+      page.cutLines = [];
+      updateCutLinesCount(page);
+    }
+
+    // 鼠标事件处理
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging || !activeLine) return;
+      const { line, page, cutData } = activeLine;
+      const wrapperRect = page.wrapper.getBoundingClientRect();
+      if (wrapperRect.width <= 0) return;
+
+      let newX = e.clientX - wrapperRect.left;
+      newX = Math.max(0, Math.min(wrapperRect.width, newX));
+      const newRatio = newX / wrapperRect.width;
+
+      cutData.ratio = newRatio;
+      line.style.left = `${newX}px`;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        activeLine = null;
+      }
+    });
+
+    // 文件上传处理
+    function handleFileUpload(file) {
+      container.innerHTML = '';
+      pages = [];
+      currentPageIndex = null;
+
+      if (!file) return;
+
+      showLoading('正在加载文件，请稍候...');
+
+      if (file.type === 'application/pdf') {
+        handlePDFFile(file);
+      } else if (supportedImageTypes.includes(file.type)) {
+        handleImageFile(file);
+      } else {
+        showMessage('不支持的文件类型。请上传 PDF 或支持的图片格式。', 'error');
+        hideLoading();
+      }
+    }
+
+    async function handlePDFFile(file) {
+      try {
+        const fileReader = new FileReader();
+        const arrayBuffer = await new Promise((resolve, reject) => {
+          fileReader.onload = () => resolve(fileReader.result);
+          fileReader.onerror = reject;
+          fileReader.readAsArrayBuffer(file);
+        });
+
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        const pdf = await loadingTask.promise;
+        const scale = 1.5;
+
+        for (let i = 0; i < pdf.numPages; i++) {
+          updateProgress((i / pdf.numPages) * 100, `正在加载 PDF 第 ${i + 1} / ${pdf.numPages} 页...`);
+          
+          const page = await pdf.getPage(i + 1);
+          const viewport = page.getViewport({ scale });
+          const pageData = createCanvasPage(viewport.width, viewport.height, i);
+
+          const renderContext = { canvasContext: pageData.ctx, viewport: viewport };
+          await page.render(renderContext).promise;
+
+          const highResScale = 2.0;
+          const highResViewport = page.getViewport({ scale: highResScale });
+          const offscreenCanvas = document.createElement('canvas');
+          offscreenCanvas.width = highResViewport.width;
+          offscreenCanvas.height = highResViewport.height;
+          const offscreenCtx = offscreenCanvas.getContext('2d');
+          const highResRenderContext = { canvasContext: offscreenCtx, viewport: highResViewport };
+          await page.render(highResRenderContext).promise;
+          pageData.originalImage = offscreenCanvas.toDataURL('image/jpeg', 0.95);
+
+          pages.push(pageData);
+        }
+        
+        showMessage(`成功加载 ${pdf.numPages} 页PDF文件`);
+      } catch (error) {
+        console.error('PDF处理错误:', error);
+        showMessage(`PDF处理失败: ${error.message}`, 'error');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    async function handleImageFile(file) {
+      try {
+        const img = new Image();
+        const imageUrl = URL.createObjectURL(file);
+        
+        await new Promise((resolve, reject) => {
+          img.onload = () => {
+            const maxDimension = 5000;
+            let width = img.naturalWidth;
+            let height = img.naturalHeight;
+
+            if (width > maxDimension || height > maxDimension) {
+              showMessage('图片尺寸过大，将自动缩放以提高性能。');
+              const scale = Math.min(maxDimension / width, maxDimension / height);
+              width = width * scale;
+              height = height * scale;
+            }
+
+            const pageData = createCanvasPage(width, height, 0);
+            pageData.ctx.drawImage(img, 0, 0, width, height);
+            pageData.originalImage = pageData.canvas.toDataURL('image/jpeg', 0.95);
+            pages.push(pageData);
+            
+            URL.revokeObjectURL(imageUrl);
+            resolve();
+          };
+          
+          img.onerror = () => {
+            URL.revokeObjectURL(imageUrl);
+            reject(new Error('无法加载图片文件'));
+          };
+          
+          img.src = imageUrl;
+        });
+        
+        showMessage('成功加载图片文件');
+      } catch (error) {
+        console.error('图片处理错误:', error);
+        showMessage(`图片处理失败: ${error.message}`, 'error');
+      } finally {
+        hideLoading();
+      }
+    }
+
+    // 事件监听器
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      handleFileUpload(file);
+    });
+
+    uploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        fileInput.files = e.dataTransfer.files;
+        handleFileUpload(file);
+      }
+    });
+
+    selectAllBtn.addEventListener('click', () => {
+      if (pages.length === 0) {
+        showMessage('请先上传文件。', 'error');
+        return;
+      }
+      
+      pages.forEach((page, index) => {
+        removeCutLinesFromPage(page);
+        selectPage(page);
+        addCutLineToPage(page, 0.5);
+      });
+      
+      showMessage('已为所有页面添加裁切线！');
+    });
+
+    addCutLineBtn.addEventListener('click', () => {
+      if (currentPageIndex === null || !pages[currentPageIndex]) {
+        showMessage('请点击选中一页后再添加裁切线', 'error');
+        return;
+      }
+      const page = pages[currentPageIndex];
+      addCutLineToPage(page, 0.5);
+    });
+
+    removeCutLinesBtn.addEventListener('click', () => {
+      if (currentPageIndex === null || !pages[currentPageIndex]) {
+        showMessage('请先选中页面', 'error');
+        return;
+      }
+      removeCutLinesFromPage(pages[currentPageIndex]);
+    });
+
+    exportBtn.addEventListener('click', async () => {
+      if (pages.length === 0) {
+        showMessage('请先上传文件。', 'error');
+        return;
+      }
+
+      const pagesWithoutCuts = pages.filter(p => p.cutLines.length === 0);
+      if (pagesWithoutCuts.length > 0) {
+        const confirmProceed = confirm(`警告：有 ${pagesWithoutCuts.length} 页没有添加裁切线，这些页面将尝试缩放到单张A4页面上。是否继续？`);
+        if (!confirmProceed) return;
+      }
+
+      showLoading('🚀 正在导出PDF，请稍候...');
+      exportBtn.disabled = true;
+
+      try {
+        const a4WidthPt = 8.27 * 72;
+        const a4HeightPt = 11.69 * 72;
+        const { jsPDF } = jspdf;
+        const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+        let pdfPageCount = 0;
+
+        for (const [index, page] of pages.entries()) {
+          updateProgress((index / pages.length) * 100, `正在处理第 ${index + 1} / ${pages.length} 页...`);
+
+          await new Promise((resolve) => {
+            if (!page.originalImage) {
+              console.warn(`Page ${index + 1} missing original image data. Skipping.`);
+              resolve();
+              return;
+            }
+
+            const img = new Image();
+            img.onload = () => {
+              const sourceCanvas = document.createElement('canvas');
+              sourceCanvas.width = img.naturalWidth;
+              sourceCanvas.height = img.naturalHeight;
+              const sourceCtx = sourceCanvas.getContext('2d');
+              sourceCtx.drawImage(img, 0, 0);
+
+              const hasCutLines = page.cutLines.length > 0;
+
+              if (!hasCutLines) {
+                if (sourceCanvas.width > 0 && sourceCanvas.height > 0) {
+                  if (pdfPageCount > 0) pdf.addPage('a4', 'p');
+                  pdfPageCount++;
+                  pdf.setPage(pdfPageCount);
+
+                  const imgWidth = sourceCanvas.width;
+                  const imgHeight = sourceCanvas.height;
+                  const scale = Math.min(a4WidthPt / imgWidth, a4HeightPt / imgHeight);
+                  const finalWidth = imgWidth * scale;
+                  const finalHeight = imgHeight * scale;
+                  const offsetX = (a4WidthPt - finalWidth) / 2;
+                  const offsetY = (a4HeightPt - finalHeight) / 2;
+
+                  pdf.addImage(sourceCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, offsetY, finalWidth, finalHeight);
+                }
+              } else {
+                const sortedRatios = page.cutLines.map(line => line.ratio).sort((a, b) => a - b);
+                const uniqueSortedRatios = [...new Set(sortedRatios)];
+                const positions = [0, ...uniqueSortedRatios, 1];
+
+                for (let i = 0; i < positions.length - 1; i++) {
+                  const startRatio = positions[i];
+                  const endRatio = positions[i + 1];
+
+                  if (typeof startRatio !== 'number' || typeof endRatio !== 'number' || startRatio < 0 || startRatio >= endRatio || endRatio > 1) {
+                    continue;
+                  }
+
+                  const startX = Math.round(startRatio * sourceCanvas.width);
+                  const segmentWidth = Math.max(0, Math.round((endRatio - startRatio) * sourceCanvas.width));
+                  const segmentHeight = sourceCanvas.height;
+
+                  if (segmentWidth <= 0 || segmentHeight <= 0) {
+                    continue;
+                  }
+
+                  const tempCanvas = document.createElement('canvas');
+                  tempCanvas.width = segmentWidth;
+                  tempCanvas.height = segmentHeight;
+                  const tempCtx = tempCanvas.getContext('2d');
+                  tempCtx.drawImage(sourceCanvas, startX, 0, segmentWidth, segmentHeight, 0, 0, segmentWidth, segmentHeight);
+
+                  if (pdfPageCount > 0) pdf.addPage('a4', 'p');
+                  pdfPageCount++;
+                  pdf.setPage(pdfPageCount);
+
+                  const imgWidth = segmentWidth;
+                  const imgHeight = segmentHeight;
+
+                  if (imgWidth > 0 && imgHeight > 0) {
+                    const scaleWidth = a4WidthPt / imgWidth;
+                    const scaleHeight = a4HeightPt / imgHeight;
+                    const scale = Math.min(scaleWidth, scaleHeight);
+                    const finalWidth = imgWidth * scale;
+                    const finalHeight = imgHeight * scale;
+                    const offsetX = (a4WidthPt - finalWidth) / 2;
+                    const offsetY = (a4HeightPt - finalHeight) / 2;
+
+                    pdf.addImage(tempCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', offsetX, offsetY, finalWidth, finalHeight);
+                  }
+                }
+              }
+              resolve();
+            };
+
+            img.onerror = () => {
+              console.error(`Error loading image data for page ${index + 1} for export.`);
+              resolve();
+            };
+
+            img.src = page.originalImage;
+          });
+        }
+
+        if (pdfPageCount > 0) {
+          pdf.save('拆分后试卷_A4.pdf');
+          showMessage('PDF导出成功！');
+        } else {
+          showMessage('未能生成任何PDF页面。请检查源文件和裁切线设置。', 'error');
+        }
+      } catch (error) {
+        console.error("导出PDF时发生错误:", error);
+        showMessage(`导出PDF失败: ${error.message}`, 'error');
+      } finally {
+        hideLoading();
+        exportBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html> 

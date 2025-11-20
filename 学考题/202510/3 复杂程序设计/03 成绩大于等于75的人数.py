@@ -20,13 +20,15 @@
 【输出】
 4 6
 '''
-count_total = 0
-count_above_75 = 0
+score=[]
+n=0
 while True:
-    score = float(input())
-    if score == -1:
+    a=float(input())
+    if a==-1:
         break
-    count_total += 1
-    if score >= 75:
-        count_above_75 += 1
-print(count_above_75, count_total)
+    else:
+        score.append(a)
+for i in range(len(score)):
+    if score[i]>=75:
+        n=n+1
+print(n,len(score))
