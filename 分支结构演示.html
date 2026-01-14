@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分支结构演示动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            display: flex;
+            gap: 40px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .score-display {
+            text-align: center;
+        }
+        
+        .score-value {
+            font-size: 80px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+            transition: all 0.5s ease;
+        }
+        
+        .grade-box {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+        }
+        
+        .grade-A {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        
+        .grade-B {
+            background: linear-gradient(135deg, #2196F3, #0b7dda);
+        }
+        
+        .grade-C {
+            background: linear-gradient(135deg, #FFC107, #ffb300);
+        }
+        
+        .grade-D {
+            background: linear-gradient(135deg, #FF5722, #e64a19);
+        }
+        
+        .grade-F {
+            background: linear-gradient(135deg, #F44336, #d32f2f);
+        }
+        
+        .slider-container {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .right-panel {
+            flex: 1;
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .flowchart {
+            position: relative;
+            width: 100%;
+            height: 500px;
+        }
+        
+        .flowchart-node {
+            position: absolute;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .start-node {
+            background: #667eea;
+            color: white;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .input-node {
+            background: #ffd93d;
+            color: #333;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .decision-node {
+            background: #ff6b6b;
+            color: white;
+            width: 150px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+        
+        .decision-node-1 {
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .decision-node-2 {
+            top: 300px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .decision-node-3 {
+            top: 420px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .output-node {
+            background: #4ecdc4;
+            color: white;
+            width: 120px;
+        }
+        
+        .output-A {
+            top: 220px;
+            left: 80%;
+        }
+        
+        .output-B {
+            top: 340px;
+            left: 80%;
+        }
+        
+        .output-C {
+            top: 460px;
+            left: 80%;
+        }
+        
+        .output-D {
+            top: 500px;
+            left: 20%;
+        }
+        
+        .output-F {
+            top: 420px;
+            left: 20%;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 2px;
+            background: #333;
+            transform-origin: top center;
+            transition: all 0.3s ease;
+        }
+        
+        .arrow-horizontal {
+            height: 2px;
+            width: auto;
+            transform-origin: left center;
+        }
+        
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -4px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 10px solid #333;
+        }
+        
+        .arrow-horizontal::after {
+            bottom: -4px;
+            left: calc(100% - 5px);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 10px solid #333;
+        }
+        
+        .label {
+            position: absolute;
+            font-size: 12px;
+            color: #666;
+            background: white;
+            padding: 2px 6px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        .active-path {
+            background: #667eea !important;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .active-arrow {
+            background: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+        }
+        
+        .active-arrow::after {
+            border-top-color: #667eea;
+        }
+        
+        .active-arrow-horizontal::after {
+            border-left-color: #667eea;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>分支结构演示</h1>
+            <div class="score-display">
+                <h2>当前分数</h2>
+                <div class="score-value" id="scoreValue">85</div>
+            </div>
+            
+            <div class="grade-box" id="gradeBox">A</div>
+            
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="85" class="slider" id="scoreSlider">
+                <div style="text-align: center; margin-top: 10px; font-size: 14px; color: #666;">
+                    拖动滑块调整分数
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="flowchart">
+                <!-- 节点 -->
+                <div class="flowchart-node start-node" id="node-start">开始</div>
+                <div class="flowchart-node input-node" id="node-input">输入分数 S</div>
+                <div class="flowchart-node decision-node decision-node-1" id="node-dec1">S ≥ 90?</div>
+                <div class="flowchart-node decision-node decision-node-2" id="node-dec2">S ≥ 80?</div>
+                <div class="flowchart-node decision-node decision-node-3" id="node-dec3">S ≥ 70?</div>
+                <div class="flowchart-node output-node output-A" id="node-A">输出等级 A</div>
+                <div class="flowchart-node output-node output-B" id="node-B">输出等级 B</div>
+                <div class="flowchart-node output-node output-C" id="node-C">输出等级 C</div>
+                <div class="flowchart-node output-node output-D" id="node-D">输出等级 D</div>
+                <div class="flowchart-node output-node output-F" id="node-F">输出等级 F</div>
+                
+                <!-- 箭头 -->
+                <div class="arrow" style="top: 60px; left: 50%; height: 40px;" id="arrow-1"></div>
+                <div class="arrow" style="top: 140px; left: 50%; height: 40px;" id="arrow-2"></div>
+                <div class="arrow" style="top: 220px; left: 50%; height: 80px;" id="arrow-3"></div>
+                <div class="arrow" style="top: 340px; left: 50%; height: 80px;" id="arrow-4"></div>
+                <div class="arrow-horizontal" style="top: 220px; left: 65%; width: 100px;" id="arrow-5"></div>
+                <div class="arrow-horizontal" style="top: 340px; left: 65%; width: 100px;" id="arrow-6"></div>
+                <div class="arrow-horizontal" style="top: 460px; left: 65%; width: 100px;" id="arrow-7"></div>
+                <div class="arrow" style="top: 380px; left: 35%; height: 40px; transform: rotate(180deg);" id="arrow-8"></div>
+                <div class="arrow-horizontal" style="top: 420px; left: 15%; width: 80px;" id="arrow-9"></div>
+                <div class="arrow-horizontal" style="top: 500px; left: 15%; width: 80px;" id="arrow-10"></div>
+                
+                <!-- 标签 -->
+                <div class="label" style="top: 200px; left: 75%;">Yes</div>
+                <div class="label" style="top: 320px; left: 75%;">Yes</div>
+                <div class="label" style="top: 440px; left: 75%;">Yes</div>
+                <div class="label" style="top: 380px; left: 25%;">No</div>
+                <div class="label" style="top: 420px; left: 10%;">No</div>
+                <div class="label" style="top: 500px; left: 10%;">Yes</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 获取DOM元素
+        const scoreSlider = document.getElementById('scoreSlider');
+        const scoreValue = document.getElementById('scoreValue');
+        const gradeBox = document.getElementById('gradeBox');
+        
+        // 所有节点和箭头
+        const nodes = {
+            start: document.getElementById('node-start'),
+            input: document.getElementById('node-input'),
+            dec1: document.getElementById('node-dec1'),
+            dec2: document.getElementById('node-dec2'),
+            dec3: document.getElementById('node-dec3'),
+            A: document.getElementById('node-A'),
+            B: document.getElementById('node-B'),
+            C: document.getElementById('node-C'),
+            D: document.getElementById('node-D'),
+            F: document.getElementById('node-F')
+        };
+        
+        const arrows = {
+            1: document.getElementById('arrow-1'),
+            2: document.getElementById('arrow-2'),
+            3: document.getElementById('arrow-3'),
+            4: document.getElementById('arrow-4'),
+            5: document.getElementById('arrow-5'),
+            6: document.getElementById('arrow-6'),
+            7: document.getElementById('arrow-7'),
+            8: document.getElementById('arrow-8'),
+            9: document.getElementById('arrow-9'),
+            10: document.getElementById('arrow-10')
+        };
+        
+        // 更新流程图高亮
+        function updateFlowchart(score) {
+            // 重置所有高亮
+            resetHighlight();
+            
+            // 高亮路径
+            highlightNode(nodes.start);
+            highlightArrow(arrows[1]);
+            highlightNode(nodes.input);
+            highlightArrow(arrows[2]);
+            highlightNode(nodes.dec1);
+            
+            if (score >= 90) {
+                // A路径
+                highlightArrow(arrows[5]);
+                highlightNode(nodes.A);
+            } else {
+                // 继续向下
+                highlightArrow(arrows[3]);
+                highlightNode(nodes.dec2);
+                
+                if (score >= 80) {
+                    // B路径
+                    highlightArrow(arrows[6]);
+                    highlightNode(nodes.B);
+                } else {
+                    // 继续向下
+                    highlightArrow(arrows[4]);
+                    highlightNode(nodes.dec3);
+                    
+                    if (score >= 70) {
+                        // C路径
+                        highlightArrow(arrows[7]);
+                        highlightNode(nodes.C);
+                    } else if (score >= 60) {
+                        // D路径
+                        highlightArrow(arrows[8]);
+                        highlightArrow(arrows[10]);
+                        highlightNode(nodes.D);
+                    } else {
+                        // F路径
+                        highlightArrow(arrows[9]);
+                        highlightNode(nodes.F);
+                    }
+                }
+            }
+        }
+        
+        // 高亮节点
+        function highlightNode(node) {
+            node.classList.add('active-path');
+        }
+        
+        // 高亮箭头
+        function highlightArrow(arrow) {
+            arrow.classList.add('active-arrow');
+            if (arrow.classList.contains('arrow-horizontal')) {
+                arrow.classList.add('active-arrow-horizontal');
+            }
+        }
+        
+        // 重置所有高亮
+        function resetHighlight() {
+            // 重置节点
+            Object.values(nodes).forEach(node => {
+                node.classList.remove('active-path');
+            });
+            
+            // 重置箭头
+            Object.values(arrows).forEach(arrow => {
+                arrow.classList.remove('active-arrow', 'active-arrow-horizontal');
+            });
+        }
+        
+        // 更新等级显示
+        function updateGradeDisplay(score) {
+            let grade;
+            let className;
+            
+            if (score >= 90) {
+                grade = 'A';
+                className = 'grade-A';
+            } else if (score >= 80) {
+                grade = 'B';
+                className = 'grade-B';
+            } else if (score >= 70) {
+                grade = 'C';
+                className = 'grade-C';
+            } else if (score >= 60) {
+                grade = 'D';
+                className = 'grade-D';
+            } else {
+                grade = 'F';
+                className = 'grade-F';
+            }
+            
+            gradeBox.textContent = grade;
+            gradeBox.className = `grade-box ${className}`;
+        }
+        
+        // 滑块事件监听
+        scoreSlider.addEventListener('input', function() {
+            const score = parseInt(this.value);
+            scoreValue.textContent = score;
+            updateGradeDisplay(score);
+            updateFlowchart(score);
+        });
+        
+        // 初始加载
+        const initialScore = parseInt(scoreSlider.value);
+        scoreValue.textContent = initialScore;
+        updateGradeDisplay(initialScore);
+        updateFlowchart(initialScore);
+    </script>
+</body>
+</html>
