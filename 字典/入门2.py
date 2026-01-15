@@ -16,3 +16,14 @@ for key in fruit:
 for key,value in fruit.items():
     print(f'键：{key},值：{value}')
 
+# 字典的修改：如果有键，更新值；没有键，就添加。
+fruit.update({
+    "apple":"苹果",
+    "banana":"香甜的香蕉",
+    4:"序号4"
+})
+print(fruit)
+
+# 字典的清空
+fruit.clear()
+print(fruit)
